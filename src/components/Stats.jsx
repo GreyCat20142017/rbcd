@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 const Stats = ({todos}) => {
 	const totals = todos.reduce((sum, current)  => {
@@ -26,5 +27,13 @@ const Stats = ({todos}) => {
     </tbody>
    </table>
 )};
+
+Stats.propTypes = {
+	todos: PropTypes.arrayOf(PropTypes.shape({
+		id: PropTypes.number.isRequired,
+		title: PropTypes.string.isRequired,
+		completed: PropTypes.bool.isRequired
+	})).isRequired
+}
 
 export default Stats;

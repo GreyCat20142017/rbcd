@@ -8,8 +8,7 @@ const todos = [
 	{id: 7, title: 'Ознакомиться с JQuery', completed: false},
 	{id: 9, title: 'Ознакомиться с Node', completed: false},	
 	{id: 10, title: 'Посeтить интенсив по  PHP', completed: false},
-	{id: 11, title: 'Написать backend для приложения Бормотунчик', completed: false},
-	{id: 12, title: 'Ознакомиться с Vue', completed: false}
+	{id: 11, title: 'Написать backend для приложения Бормотунчик', completed: false}
 ];
 
 export default todos;

@@ -9,7 +9,7 @@ const Todo = ({id, title, completed, onStatusChange, onTodoDelete}) => {
 	<div className='todo'>
 		<Checkbox checked={completed} onChange={() => onStatusChange(id)}/>
 		<span className='todo-title'>{title}</span>
-		<Button icon={'delete'} className={'delete icon'} onDelete={() => onTodoDelete(id)}/>
+		<Button icon={'delete'} className={'delete icon'} onClick={() => onTodoDelete(id)}/>
 	</div>
 )};
 

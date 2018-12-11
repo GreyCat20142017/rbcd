@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 
 import Header from './components/Header';
 import Todo from './components/Todo';
+import Form from './components/Form';
 
 
  class App extends  React.Component {
@@ -10,7 +11,20 @@ import Todo from './components/Todo';
  	constructor(props) {
  		super(props);
  		this.state = {todos: this.props.todos};
- 	}
+ 		this.nextId =  this.props.todos.reduce((max, current)  => {
+      max = max > current.id ? max : current.id;
+      return max;
+			}, 0); 	
+  }
+
+ 	getNextId = () => { 		
+ 		return this.nextId;
+	}
+
+	incrementId = () => {
+		this.nextId = this.nextId + 1;
+	}
+ 	
 
  	onStatusChange = (id) => {
  		const newTodos = this.state.todos.map(todo => {
@@ -27,6 +41,16 @@ import Todo from './components/Todo';
  		this.setState({todos: newTodos});
  	}
 
+ 	onTodoAdd = (title) => {
+ 		this.incrementId();
+ 		let newTodo = {
+ 			id: this.getNextId(),
+ 			title: title,
+ 			completed: false 
+ 		}; 
+ 		this.setState({todos: [...this.state.todos, newTodo]});
+ 	}
+
    render() {
    	const {title} = this.props;
    	const {todos} = this.state;
@@ -40,9 +64,10 @@ import Todo from './components/Todo';
     				title={todo.title} 
     				completed={todo.completed} 
     				onStatusChange={this.onStatusChange}
-    				onTodoDelete={this.onTodoDelete}
+    				onTodoDelete={this.onTodoDelete}    		
     			/>)}    	
     	</section>
+    	<Form onAdd={this.onTodoAdd}/>
     </main>
    )
 	}
