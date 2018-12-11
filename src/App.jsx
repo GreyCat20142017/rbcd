@@ -14,7 +14,7 @@ import Form from './components/Form';
  		this.nextId =  this.props.todos.reduce((max, current)  => {
       max = max > current.id ? max : current.id;
       return max;
-			}, 0); 	
+			}, 0); 	 		
   }
 
  	getNextId = () => { 		
@@ -38,6 +38,16 @@ import Form from './components/Form';
 
  	onTodoDelete = (id) => {
  		const newTodos = this.state.todos.filter(todo => (todo.id !== id)); 		
+ 		this.setState({todos: newTodos});
+ 	}
+
+ 	onTodoEdit = (id, newTitle) => {
+ 		const newTodos = this.state.todos.map(todo => {
+ 			if (todo.id === id) {
+ 				todo.title = newTitle;
+ 			}
+ 			return todo;
+ 		});
  		this.setState({todos: newTodos});
  	}
 
@@ -65,6 +75,7 @@ import Form from './components/Form';
     				completed={todo.completed} 
     				onStatusChange={this.onStatusChange}
     				onTodoDelete={this.onTodoDelete}    		
+    				onTodoEdit={this.onTodoEdit}  
     			/>)}    	
     	</section>
     	<Form onAdd={this.onTodoAdd}/>
