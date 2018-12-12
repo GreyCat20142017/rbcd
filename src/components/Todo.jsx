@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import Checkbox from './Checkbox';
 import Button from './Button';
 
+const ESC_KEYCODE = 27;
+
 class Todo extends React.Component {
 	constructor(props) {
 		super(props);
@@ -11,25 +13,45 @@ class Todo extends React.Component {
 		}
 	}
 
+	componentDidUpdate(prevProps, prevState) {
+		if (this.state.editing) {
+			this.refs.title.focus();
+			this.refs.title.select();
+		}
+	}
+
 	onEditSubmit = (evt) => {
 		evt.preventDefault();
 		const title = this.refs.title.value;
 		this.props.onTodoEdit(this.props.id, title);
-		this.setState({editing: false});
+		this.setState({
+			editing: false
+		});
 	}
 
 	changeUI = () => {
-		this.setState({editing: !this.state.editing});
+		this.setState({
+			editing: !this.state.editing
+		});
 	}
 
 	renderForm() {
 		const title=this.props.title;
 		return (
-		<form className='todo-edit-form' onSubmit={this.onEditSubmit}>
+		<form className='todo-edit-form' onSubmit={this.onEditSubmit} onKeyDown={this.onEscape}>
 				<input type='text' defaultValue={title} ref='title'/>
 				<Button className={'save icon'} icon={'save'} type='submit'/>
 		</form>)
 	}
+
+	onEscape = (evt) => {
+		if (evt.keyCode === ESC_KEYCODE && this.state.editing) {
+			this.setState({
+				editing: false
+			});
+		}
+	}
+
 
 	renderDisplay() {
 		const	{id, title, completed, onStatusChange, onTodoDelete} = this.props;
