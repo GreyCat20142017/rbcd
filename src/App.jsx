@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
+import axios from 'axios';
 
 import Header from './components/Header';
 import Todo from './components/Todo';
@@ -11,55 +12,61 @@ import Form from './components/Form';
 
  	constructor(props) {
  		super(props);
- 		this.state = {todos: this.props.todos};
- 		this.nextId =  this.props.todos.reduce((max, current)  => {
-      max = max > current.id ? max : current.id;
-      return max;
-			}, 0); 	 		
+ 		this.state = {todos: []}; 
   }
 
- 	getNextId = () => { 		
- 		return this.nextId;
-	}
+  onError = (err)	=> 	console.log(err.message);
+  
 
-	incrementId = () => {
-		this.nextId = this.nextId + 1;
+	componentDidMount() {
+		axios.get('api/todos')
+		.then(response => response.data)
+		.then(todos => this.setState({todos: todos}))
+		.catch(this.onError);
 	}
  	
-
- 	onStatusChange = (id) => {
- 		const newTodos = this.state.todos.map(todo => {
- 			if (todo.id === id) {
- 				todo.completed = !todo.completed;
- 			}
- 			return todo;
- 		});
- 		this.setState({todos: newTodos});
- 	}
+	onStatusChange = (id) => {
+		axios.patch(`api/todos/${id}`)
+		.then(response => {
+			const newTodos = this.state.todos.map(todo => {
+				if (todo.id === id) {
+					todo = response.data;
+				}
+				return todo;
+			});
+			this.setState({todos: newTodos});
+		})		
+		.catch(this.onError); 		
+	}
 
  	onTodoDelete = (id) => {
- 		const newTodos = this.state.todos.filter(todo => (todo.id !== id)); 		
- 		this.setState({todos: newTodos});
+ 		axios.delete(`api/todos/${id}`)
+ 		.then(() =>  { 
+ 			const todos = this.state.todos.filter(todo => (todo.id !== id));
+ 			this.setState({todos: todos}); 
+ 		})
+ 		.catch(this.onError);	
  	}
 
  	onTodoEdit = (id, newTitle) => {
- 		const newTodos = this.state.todos.map(todo => {
- 			if (todo.id === id) {
- 				todo.title = newTitle;
- 			}
- 			return todo;
- 		});
- 		this.setState({todos: newTodos});
+ 		axios.put(`api/todos/${id}`, {title: newTitle})
+ 		.then(response => {
+ 			const newTodos = this.state.todos.map(todo => {
+ 				if (todo.id === id) {
+ 					todo = response.data;
+ 				}
+ 				return todo;
+ 			});
+ 			this.setState({todos: newTodos});
+ 		})		
+ 		.catch(this.onError);  
  	}
 
  	onTodoAdd = (title) => {
- 		this.incrementId();
- 		let newTodo = {
- 			id: this.getNextId(),
- 			title: title,
- 			completed: false 
- 		}; 
- 		this.setState({todos: [...this.state.todos, newTodo]});
+ 		axios.post('api/todos', {title: title})
+		.then(response => response.data)
+		.then(newTodo =>	this.setState({todos: [...this.state.todos, newTodo]}))
+		.catch(this.onError);
  	}
 
    render() {

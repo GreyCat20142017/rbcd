@@ -32,7 +32,7 @@ class Todo extends React.Component {
 	changeUI = () => {
 		this.setState({
 			editing: !this.state.editing
-		});
+		});		
 	}
 
 	renderForm() {
